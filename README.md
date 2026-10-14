@@ -50,3 +50,6 @@ O rodapé tem um seletor de **cliente de teste**, que simula qual cliente está 
 ## Documentação
 
 Requisitos e regras de negócio ficam na pasta `docs/`. O histórico de mudanças da loja fica no `CHANGELOG.md`.
+
+
+initial
