@@ -1,8 +1,12 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 
-export default function PaginaProduto({ produtos, onAdicionar }) {
+export default function PaginaProduto({ produtos, onAdicionar, onRegistrarEspera }) {
   const { id } = useParams()
   const produto = produtos.find((item) => item.id === id)
+  const [formulario, setFormulario] = useState({ nome: '', email: '' })
+  const [mensagem, setMensagem] = useState('')
+  const [erro, setErro] = useState('')
 
   if (!produto) {
     return (
@@ -18,6 +22,31 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
   const relacionados = produtos
     .filter((item) => item.category === produto.category && item.id !== produto.id)
     .slice(0, 4)
+
+  function handleSubmit(evento) {
+    evento.preventDefault()
+
+    const nome = formulario.nome.trim()
+    const email = formulario.email.trim()
+
+    if (!nome || !email) {
+      setErro('Preencha nome e e-mail para receber o aviso.')
+      setMensagem('')
+      return
+    }
+
+    const cadastrado = onRegistrarEspera({ idProduto: produto.id, nome, email })
+
+    if (!cadastrado) {
+      setErro('Você já está na lista de espera para este produto.')
+      setMensagem('')
+      return
+    }
+
+    setErro('')
+    setMensagem('Você foi adicionado à lista de espera.')
+    setFormulario({ nome: '', email: '' })
+  }
 
   return (
     <section>
@@ -48,6 +77,49 @@ export default function PaginaProduto({ produtos, onAdicionar }) {
           >
             Adicionar ao carrinho
           </button>
+
+          {produto.estoque === 0 && (
+            <div className="painel-espera-produto">
+              <p className="sobretitulo">Produto esgotado</p>
+              <h2>Receba um aviso quando voltar</h2>
+              <p>Deixe seu nome e e-mail e avisaremos assim que ele estiver disponível.</p>
+
+              <form className="formulario-espera" onSubmit={handleSubmit}>
+                <div className="campo-espera">
+                  <label htmlFor="nome-espera">Nome</label>
+                  <input
+                    id="nome-espera"
+                    type="text"
+                    value={formulario.nome}
+                    onChange={(evento) =>
+                      setFormulario((atual) => ({ ...atual, nome: evento.target.value }))
+                    }
+                    placeholder="Seu nome"
+                  />
+                </div>
+
+                <div className="campo-espera">
+                  <label htmlFor="email-espera">E-mail</label>
+                  <input
+                    id="email-espera"
+                    type="email"
+                    value={formulario.email}
+                    onChange={(evento) =>
+                      setFormulario((atual) => ({ ...atual, email: evento.target.value }))
+                    }
+                    placeholder="seu@email.com"
+                  />
+                </div>
+
+                {erro && <p className="mensagem-form mensagem-erro">{erro}</p>}
+                {mensagem && <p className="mensagem-form mensagem-sucesso">{mensagem}</p>}
+
+                <button type="submit" className="botao botao-grande">
+                  Quero ser avisado
+                </button>
+              </form>
+            </div>
+          )}
 
           <ul className="detalhe-garantias">
             <li>Troca grátis em até 30 dias</li>

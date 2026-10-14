@@ -395,7 +395,7 @@ h2 {
   font-size: 0.85rem;
 }
 
-.preco-original + .preco {
+.preco-original+.preco {
   color: var(--cor-destaque);
 }
 
@@ -591,6 +591,99 @@ h2 {
   font-weight: 700;
 }
 
+.painel-espera-produto {
+  margin-top: var(--espaco-2);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  background: var(--cor-superficie);
+  padding: var(--espaco-5);
+  display: grid;
+  gap: var(--espaco-4);
+}
+
+.painel-espera-produto h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.painel-espera-produto p {
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+.formulario-espera {
+  display: grid;
+  gap: var(--espaco-4);
+}
+
+.campo-espera {
+  display: grid;
+  gap: var(--espaco-2);
+}
+
+.campo-espera label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--cor-texto);
+}
+
+.campo-espera input {
+  width: 100%;
+  padding: var(--espaco-3);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-fundo);
+}
+
+.mensagem-form {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.mensagem-erro {
+  color: var(--cor-erro);
+}
+
+.mensagem-sucesso {
+  color: var(--cor-frete);
+}
+
+.painel-espera {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: var(--espaco-5);
+  display: grid;
+  gap: var(--espaco-4);
+}
+
+.painel-espera h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.lista-espera {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--espaco-2);
+}
+
+.item-espera {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--espaco-3);
+  padding: var(--espaco-3) 0;
+  border-top: 1px solid var(--cor-borda);
+  color: var(--cor-texto-suave);
+}
+
+.item-espera strong {
+  color: var(--cor-texto);
+}
+
 /* Carrinho */
 
 .carrinho-layout {
@@ -622,7 +715,7 @@ h2 {
   padding: var(--espaco-4);
 }
 
-.item-carrinho + .item-carrinho {
+.item-carrinho+.item-carrinho {
   border-top: 1px solid var(--cor-borda);
 }
 
@@ -821,6 +914,52 @@ h2 {
 
 .tabela tbody tr:last-child td {
   border-bottom: none;
+}
+
+/* Painel do lojista */
+
+.dashboard-grid {
+  display: grid;
+  gap: var(--espaco-4);
+  margin-bottom: var(--espaco-6);
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.card-metrica {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-2);
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: var(--espaco-5);
+}
+
+.card-metrica-titulo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+}
+
+.card-metrica strong {
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  letter-spacing: -0.03em;
+}
+
+.card-metrica small {
+  color: var(--cor-texto-suave);
+}
+
+.painel-dashboard {
+  display: grid;
+  gap: var(--espaco-4);
 }
 
 /* Rodapé */

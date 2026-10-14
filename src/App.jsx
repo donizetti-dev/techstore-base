@@ -7,6 +7,8 @@ import Loja from './pages/Loja'
 import PaginaProduto from './pages/PaginaProduto'
 import Carrinho from './pages/Carrinho'
 import Estoque from './pages/Estoque'
+import EsperaProdutos from './pages/EsperaProdutos'
+import PainelLojista from './pages/PainelLojista'
 import { buscarProdutos } from './services/produtos'
 import { buscarClientes } from './services/clientes'
 
@@ -17,10 +19,20 @@ export default function App() {
   const [carrinho, setCarrinho] = useState([])
   const [clientes, setClientes] = useState([])
   const [clienteAtualId, setClienteAtualId] = useState(null)
+  const [esperaProdutos, setEsperaProdutos] = useState([])
 
   useEffect(() => {
     buscarProdutos()
-      .then((dados) => setProdutos(dados))
+      .then((dados) => {
+        const produtosNormalizados = dados
+          .map((produto) => ({
+            ...produto,
+            price: Number(produto.price),
+          }))
+          .filter((produto) => Number.isFinite(produto.price) && produto.price > 0)
+
+        setProdutos(produtosNormalizados)
+      })
       .catch(() => setErro('Não foi possível carregar os produtos.'))
       .finally(() => setCarregando(false))
 
@@ -31,14 +43,18 @@ export default function App() {
   }, [])
 
   function adicionarAoCarrinho(produto) {
-    setCarrinho(carrinho.concat(produto))
+    setCarrinho((atual) => atual.concat(produto))
+
+    if (typeof window !== 'undefined' && produto?.title) {
+      window.alert(`${produto.title} adicionado ao carrinho.`)
+    }
   }
 
   function removerUmaUnidade(produtoId) {
     // Remove só a primeira unidade encontrada do produto
     let removido = false
-    setCarrinho(
-      carrinho.filter((produto) => {
+    setCarrinho((atual) =>
+      atual.filter((produto) => {
         if (!removido && produto.id === produtoId) {
           removido = true
           return false
@@ -46,6 +62,35 @@ export default function App() {
         return true
       })
     )
+  }
+
+  function registrarEspera({ idProduto, nome, email }) {
+    const nomeLimpo = nome.trim()
+    const emailLimpo = email.trim().toLowerCase()
+
+    if (!idProduto || !nomeLimpo || !emailLimpo) {
+      return false
+    }
+
+    const jaCadastrado = esperaProdutos.some(
+      (registro) =>
+        registro.idProduto === idProduto && registro.email.toLowerCase() === emailLimpo
+    )
+
+    if (jaCadastrado) {
+      return false
+    }
+
+    setEsperaProdutos((atual) =>
+      atual.concat({
+        idProduto,
+        nome: nomeLimpo,
+        email: emailLimpo,
+        data: new Date().toISOString(),
+      })
+    )
+
+    return true
   }
 
   const clienteAtual = clientes.find((cliente) => cliente.id === clienteAtualId)
@@ -67,7 +112,13 @@ export default function App() {
             />
             <Route
               path="/produto/:id"
-              element={<PaginaProduto produtos={produtos} onAdicionar={adicionarAoCarrinho} />}
+              element={
+                <PaginaProduto
+                  produtos={produtos}
+                  onAdicionar={adicionarAoCarrinho}
+                  onRegistrarEspera={registrarEspera}
+                />
+              }
             />
             <Route
               path="/carrinho"
@@ -82,6 +133,14 @@ export default function App() {
               }
             />
             <Route path="/estoque" element={<Estoque produtos={produtos} />} />
+            <Route
+              path="/espera-produtos"
+              element={<EsperaProdutos produtos={produtos} esperaProdutos={esperaProdutos} />}
+            />
+            <Route
+              path="/painel-lojista"
+              element={<PainelLojista produtos={produtos} esperaProdutos={esperaProdutos} />}
+            />
           </Routes>
         )}
       </main>
